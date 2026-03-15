@@ -13,7 +13,9 @@ type ExtensionPreferences = {
   /** Target List Name - The exact name or pattern of the list to append entries to (e.g., 'Journal') */
   "targetList": string,
   /** Timestamp Format - Format for the prepended timestamp */
-  "timestampFormat": "12h" | "24h"
+  "timestampFormat": "12h" | "24h",
+  /** Close Delay (seconds) - Time to wait before closing the window after saving (e.g. 2 or 0.75) */
+  "closeDelay": string
 }
 
 /** Preferences accessible in all the extension's commands */

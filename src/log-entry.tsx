@@ -16,6 +16,7 @@ interface Preferences {
   workflowyApiKey?: string;
   targetList?: string;
   timestampFormat?: string;
+  closeDelay?: string;
 }
 
 export default function Command() {
@@ -89,9 +90,12 @@ export default function Command() {
       // Clear the form after success
       setText("");
 
+      const delaySeconds = parseFloat(preferences.closeDelay || "2");
+      const delayMs = (isNaN(delaySeconds) ? 2 : delaySeconds) * 1000;
+
       setTimeout(async () => {
         await closeMainWindow();
-      }, 2000);
+      }, delayMs);
     } catch (error) {
       toast.style = Toast.Style.Failure;
       toast.title = "Failed to log entry";

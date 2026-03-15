@@ -47,6 +47,14 @@
           "value": "24h"
         }
       ]
+    },
+    {
+      "name": "closeDelay",
+      "title": "Close Delay (seconds)",
+      "description": "Time to wait before closing the window after saving (e.g. 2 or 0.75)",
+      "type": "textfield",
+      "required": false,
+      "default": "2"
     }
   ],
   "dependencies": {
