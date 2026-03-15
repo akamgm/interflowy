@@ -46,12 +46,19 @@ export default function Command() {
 
     try {
       const workflowy = new WorkFlowy("", "");
-      workflowy
-        .getClient()
-        .sessionHeaders.set(
-          "Cookie",
-          `sessionid=${preferences.workflowyApiKey}`,
+      const client = workflowy.getClient();
+
+      // Handle case where user accidentally includes "sessionid=" prefix
+      const apiKey = preferences.workflowyApiKey.replace(/^sessionid=/, "");
+      client.sessionHeaders.set("Cookie", `sessionid=${apiKey}`);
+
+      // Prevent fallback to email/password login if cookie is invalid
+      client.login = async () => {
+        throw new Error(
+          "Invalid Workflowy API Key. Please check your extension preferences.",
         );
+      };
+
       const document = await workflowy.getDocument();
 
       const targetListPattern = new RegExp(preferences.targetList, "i");
