@@ -8,8 +8,8 @@ import {
   openExtensionPreferences,
   Icon,
 } from "@raycast/api";
-import { WorkFlowy } from "workflowy";
 import { useState } from "react";
+import { WorkflowyClient } from "./workflowy-api";
 
 interface Preferences {
   workflowyApiKey?: string;
@@ -53,27 +53,8 @@ export default function Command() {
     });
 
     try {
-      const workflowy = new WorkFlowy("", "");
-      const client = workflowy.getClient();
-
-      // Handle case where user accidentally includes "sessionid=" prefix
-      const apiKey = preferences.workflowyApiKey
-        .trim()
-        .replace(/^sessionid=/, "")
-        .trim();
-      client.sessionHeaders.set("Cookie", `sessionid=${apiKey}`);
-
-      // Prevent fallback to email/password login if cookie is invalid
-      client.login = async () => {
-        throw new Error(
-          "Invalid Workflowy API Key. Please check your extension preferences.",
-        );
-      };
-
-      const document = await workflowy.getDocument();
-
-      const targetListPattern = new RegExp(preferences.targetList, "i");
-      const targetList = document.root.findOne(targetListPattern);
+      const client = new WorkflowyClient(preferences.workflowyApiKey);
+      const targetList = await client.findNodeByName(preferences.targetList);
 
       if (!targetList) {
         toast.style = Toast.Style.Failure;
@@ -89,18 +70,14 @@ export default function Command() {
         return;
       }
 
-      const item = targetList.createItem();
-
       // Get time in a short format like "09:41 AM"
       const timeStr = new Date().toLocaleTimeString([], {
         hour: "2-digit",
         minute: "2-digit",
       });
-      item.setName(`**${timeStr}** ${values.text}`);
+      const itemName = `**${timeStr}** ${values.text}`;
 
-      if (document.isDirty()) {
-        await document.save();
-      }
+      await client.createNode(targetList.id, itemName);
 
       toast.style = Toast.Style.Success;
       toast.title = "Logged successfully";

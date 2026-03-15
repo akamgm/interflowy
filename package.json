@@ -32,8 +32,7 @@
     }
   ],
   "dependencies": {
-    "@raycast/api": "^1.79.0",
-    "workflowy": "^2.9.0"
+    "@raycast/api": "^1.79.0"
   },
   "devDependencies": {
     "@raycast/eslint-config": "^1.0.8",
