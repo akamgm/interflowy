@@ -9,20 +9,23 @@
 
 type ExtensionPreferences = {
   /** Workflowy API Key - Your Workflowy API key */
-  workflowyApiKey: string;
+  "workflowyApiKey": string,
   /** Target List Name - The exact name or pattern of the list to append entries to (e.g., 'Journal') */
-  targetList: string;
-};
+  "targetList": string,
+  /** Timestamp Format - Format for the prepended timestamp */
+  "timestampFormat": "12h" | "24h"
+}
 
 /** Preferences accessible in all the extension's commands */
-declare type Preferences = ExtensionPreferences;
+declare type Preferences = ExtensionPreferences
 
 declare namespace Preferences {
   /** Preferences accessible in the `log-entry` command */
-  export type LogEntry = ExtensionPreferences & {};
+  export type LogEntry = ExtensionPreferences & {}
 }
 
 declare namespace Arguments {
   /** Arguments passed to the `log-entry` command */
-  export type LogEntry = {};
+  export type LogEntry = {}
 }
+

@@ -14,6 +14,7 @@ import { WorkflowyClient } from "./workflowy-api";
 interface Preferences {
   workflowyApiKey?: string;
   targetList?: string;
+  timestampFormat?: string;
 }
 
 export default function Command() {
@@ -70,10 +71,12 @@ export default function Command() {
         return;
       }
 
-      // Get time in a short format like "09:41 AM"
+      // Get time in a short format
+      const is24h = preferences.timestampFormat === "24h";
       const timeStr = new Date().toLocaleTimeString([], {
-        hour: "2-digit",
+        hour: is24h ? "2-digit" : "numeric",
         minute: "2-digit",
+        hour12: !is24h,
       });
       const itemName = `**${timeStr}** ${values.text}`;
 

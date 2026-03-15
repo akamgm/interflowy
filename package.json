@@ -29,6 +29,24 @@
       "type": "textfield",
       "required": true,
       "default": "Journal"
+    },
+    {
+      "name": "timestampFormat",
+      "title": "Timestamp Format",
+      "description": "Format for the prepended timestamp",
+      "type": "dropdown",
+      "required": false,
+      "default": "12h",
+      "data": [
+        {
+          "title": "12-hour (e.g. 4:53 PM)",
+          "value": "12h"
+        },
+        {
+          "title": "24-hour (e.g. 16:53)",
+          "value": "24h"
+        }
+      ]
     }
   ],
   "dependencies": {
