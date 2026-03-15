@@ -57,7 +57,10 @@ export default function Command() {
       const client = workflowy.getClient();
 
       // Handle case where user accidentally includes "sessionid=" prefix
-      const apiKey = preferences.workflowyApiKey.replace(/^sessionid=/, "");
+      const apiKey = preferences.workflowyApiKey
+        .trim()
+        .replace(/^sessionid=/, "")
+        .trim();
       client.sessionHeaders.set("Cookie", `sessionid=${apiKey}`);
 
       // Prevent fallback to email/password login if cookie is invalid
