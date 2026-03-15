@@ -5,6 +5,8 @@ import {
   showToast,
   Toast,
   getPreferenceValues,
+  openExtensionPreferences,
+  Icon,
 } from "@raycast/api";
 import { WorkFlowy } from "workflowy";
 import { useState } from "react";
@@ -34,6 +36,12 @@ export default function Command() {
         message:
           "Please configure your Workflowy API key in extension preferences.",
         style: Toast.Style.Failure,
+        primaryAction: {
+          title: "Open Extension Preferences",
+          onAction: () => {
+            openExtensionPreferences();
+          },
+        },
       });
       return;
     }
@@ -68,6 +76,12 @@ export default function Command() {
         toast.style = Toast.Style.Failure;
         toast.title = "Target list not found";
         toast.message = `Could not find a list matching "${preferences.targetList}"`;
+        toast.primaryAction = {
+          title: "Open Extension Preferences",
+          onAction: () => {
+            openExtensionPreferences();
+          },
+        };
         setIsLoading(false);
         return;
       }
@@ -94,6 +108,12 @@ export default function Command() {
       toast.style = Toast.Style.Failure;
       toast.title = "Failed to log entry";
       toast.message = error instanceof Error ? error.message : String(error);
+      toast.primaryAction = {
+        title: "Open Extension Preferences",
+        onAction: () => {
+          openExtensionPreferences();
+        },
+      };
     } finally {
       setIsLoading(false);
     }
@@ -105,6 +125,11 @@ export default function Command() {
       actions={
         <ActionPanel>
           <Action.SubmitForm title="Log Entry" onSubmit={handleSubmit} />
+          <Action
+            title="Open Extension Preferences"
+            icon={Icon.Gear}
+            onAction={openExtensionPreferences}
+          />
         </ActionPanel>
       }
     >
