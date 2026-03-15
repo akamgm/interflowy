@@ -16,16 +16,9 @@
   ],
   "preferences": [
     {
-      "name": "workflowyEmail",
-      "title": "Workflowy Email",
-      "description": "Your Workflowy login email",
-      "type": "textfield",
-      "required": true
-    },
-    {
-      "name": "workflowyPassword",
-      "title": "Workflowy Password",
-      "description": "Your Workflowy login password",
+      "name": "workflowyApiKey",
+      "title": "Workflowy API Key",
+      "description": "Your Workflowy API key",
       "type": "password",
       "required": true
     },

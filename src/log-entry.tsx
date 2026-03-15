@@ -10,8 +10,7 @@ import { WorkFlowy } from "workflowy";
 import { useState } from "react";
 
 interface Preferences {
-  workflowyEmail?: string;
-  workflowyPassword?: string;
+  workflowyApiKey?: string;
   targetList?: string;
 }
 
@@ -29,15 +28,11 @@ export default function Command() {
       return;
     }
 
-    if (
-      !preferences.workflowyEmail ||
-      !preferences.workflowyPassword ||
-      !preferences.targetList
-    ) {
+    if (!preferences.workflowyApiKey || !preferences.targetList) {
       showToast({
         title: "Missing preferences",
         message:
-          "Please configure your Workflowy credentials in extension preferences.",
+          "Please configure your Workflowy API key in extension preferences.",
         style: Toast.Style.Failure,
       });
       return;
@@ -50,10 +45,13 @@ export default function Command() {
     });
 
     try {
-      const workflowy = new WorkFlowy(
-        preferences.workflowyEmail,
-        preferences.workflowyPassword,
-      );
+      const workflowy = new WorkFlowy("", "");
+      workflowy
+        .getClient()
+        .sessionHeaders.set(
+          "Cookie",
+          `sessionid=${preferences.workflowyApiKey}`,
+        );
       const document = await workflowy.getDocument();
 
       const targetListPattern = new RegExp(preferences.targetList, "i");

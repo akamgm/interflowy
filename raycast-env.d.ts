@@ -8,10 +8,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
 type ExtensionPreferences = {
-  /** Workflowy Email - Your Workflowy login email */
-  "workflowyEmail": string,
-  /** Workflowy Password - Your Workflowy login password */
-  "workflowyPassword": string,
+  /** Workflowy API Key - Your Workflowy API key */
+  "workflowyApiKey": string,
   /** Target List Name - The exact name or pattern of the list to append entries to (e.g., 'Journal') */
   "targetList": string
 }
