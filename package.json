@@ -4,7 +4,7 @@
   "title": "Interflowy",
   "description": "Send a short burst of text as an interstitial journal entry to your Workflowy account.",
   "icon": "extension-icon.png",
-  "author": "mgm",
+  "author": "akamgm",
   "license": "MIT",
   "commands": [
     {

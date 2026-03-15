@@ -7,6 +7,7 @@ import {
   getPreferenceValues,
   openExtensionPreferences,
   Icon,
+  closeMainWindow,
 } from "@raycast/api";
 import { useState } from "react";
 import { WorkflowyClient } from "./workflowy-api";
@@ -87,6 +88,10 @@ export default function Command() {
 
       // Clear the form after success
       setText("");
+
+      setTimeout(async () => {
+        await closeMainWindow();
+      }, 2000);
     } catch (error) {
       toast.style = Toast.Style.Failure;
       toast.title = "Failed to log entry";

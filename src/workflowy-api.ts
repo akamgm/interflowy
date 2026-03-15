@@ -1,3 +1,8 @@
+export interface WorkflowyNode {
+  id: string;
+  name: string;
+}
+
 /**
  * Simple client for Workflowy's new official API
  */
@@ -22,7 +27,7 @@ export class WorkflowyClient {
   /**
    * Search for a list (node) by its name pattern
    */
-  async findNodeByName(pattern: string): Promise<any | null> {
+  async findNodeByName(pattern: string): Promise<WorkflowyNode | null> {
     const regex = new RegExp(pattern, "i");
     const queue: (string | null)[] = [null]; // null represents the root
 
@@ -45,7 +50,7 @@ export class WorkflowyClient {
         );
       }
 
-      const data = (await response.json()) as { nodes: any[] };
+      const data = (await response.json()) as { nodes: WorkflowyNode[] };
       const nodes = data.nodes || [];
 
       for (const node of nodes) {
