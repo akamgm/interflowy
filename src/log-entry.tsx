@@ -57,21 +57,6 @@ export default function Command() {
 
     try {
       const client = new WorkflowyClient(preferences.workflowyApiKey);
-      const targetList = await client.findNodeByName(preferences.targetList);
-
-      if (!targetList) {
-        toast.style = Toast.Style.Failure;
-        toast.title = "Target list not found";
-        toast.message = `Could not find a list matching "${preferences.targetList}"`;
-        toast.primaryAction = {
-          title: "Open Extension Preferences",
-          onAction: () => {
-            openExtensionPreferences();
-          },
-        };
-        setIsLoading(false);
-        return;
-      }
 
       // Get time in a short format
       const is24h = preferences.timestampFormat === "24h";
@@ -82,7 +67,7 @@ export default function Command() {
       });
       const itemName = `**${timeStr}** ${values.text}`;
 
-      await client.createNode(targetList.id, itemName);
+      await client.createNode("today", itemName);
 
       toast.style = Toast.Style.Success;
       toast.title = "Logged successfully";
