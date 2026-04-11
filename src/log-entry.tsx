@@ -9,12 +9,11 @@ import {
   Icon,
   closeMainWindow,
 } from "@raycast/api";
-import { useState } from "react";
-import { WorkflowyClient } from "./workflowy-api";
+import { useState, useEffect } from "react";
+import { WorkflowyClient, WorkflowyTarget } from "./workflowy-api";
 
 interface Preferences {
   workflowyApiKey?: string;
-  targetList?: string;
   timestampFormat?: string;
   closeDelay?: string;
 }
@@ -22,9 +21,38 @@ interface Preferences {
 export default function Command() {
   const [isLoading, setIsLoading] = useState(false);
   const [text, setText] = useState("");
+  const [targets, setTargets] = useState<WorkflowyTarget[]>([]);
+  const [targetsLoading, setTargetsLoading] = useState(true);
+  const [selectedTarget, setSelectedTarget] = useState<string>("");
   const preferences = getPreferenceValues<Preferences>();
 
-  async function handleSubmit(values: { text: string }) {
+  useEffect(() => {
+    async function fetchTargets() {
+      if (!preferences.workflowyApiKey) {
+        setTargetsLoading(false);
+        return;
+      }
+      try {
+        const client = new WorkflowyClient(preferences.workflowyApiKey);
+        const fetchedTargets = await client.listTargets();
+        setTargets(fetchedTargets);
+        if (fetchedTargets.length > 0) {
+          setSelectedTarget(fetchedTargets[0].id);
+        }
+      } catch (error) {
+        await showToast({
+          title: "Failed to load targets",
+          message: error instanceof Error ? error.message : String(error),
+          style: Toast.Style.Failure,
+        });
+      } finally {
+        setTargetsLoading(false);
+      }
+    }
+    fetchTargets();
+  }, []);
+
+  async function handleSubmit(values: { text: string; target: string }) {
     if (!values.text) {
       showToast({
         title: "Please enter some text",
@@ -33,11 +61,10 @@ export default function Command() {
       return;
     }
 
-    if (!preferences.workflowyApiKey || !preferences.targetList) {
+    if (!preferences.workflowyApiKey) {
       showToast({
         title: "Missing preferences",
-        message:
-          "Please configure your Workflowy API key in extension preferences.",
+        message: "Please configure your Workflowy API key in extension preferences.",
         style: Toast.Style.Failure,
         primaryAction: {
           title: "Open Extension Preferences",
@@ -45,6 +72,15 @@ export default function Command() {
             openExtensionPreferences();
           },
         },
+      });
+      return;
+    }
+
+    if (!values.target) {
+      showToast({
+        title: "No target selected",
+        message: "Please select a target list.",
+        style: Toast.Style.Failure,
       });
       return;
     }
@@ -58,7 +94,6 @@ export default function Command() {
     try {
       const client = new WorkflowyClient(preferences.workflowyApiKey);
 
-      // Get time in a short format
       const is24h = preferences.timestampFormat === "24h";
       const timeStr = new Date().toLocaleTimeString([], {
         hour: is24h ? "2-digit" : "numeric",
@@ -67,12 +102,11 @@ export default function Command() {
       });
       const itemName = `**${timeStr}** ${values.text}`;
 
-      await client.createNode("today", itemName);
+      await client.createNode(values.target, itemName);
 
       toast.style = Toast.Style.Success;
       toast.title = "Logged successfully";
 
-      // Clear the form after success
       setText("");
 
       const delaySeconds = parseFloat(preferences.closeDelay || "2");
@@ -98,7 +132,7 @@ export default function Command() {
 
   return (
     <Form
-      isLoading={isLoading}
+      isLoading={isLoading || targetsLoading}
       actions={
         <ActionPanel>
           <Action.SubmitForm title="Log Entry" onSubmit={handleSubmit} />
@@ -118,6 +152,16 @@ export default function Command() {
         onChange={setText}
         autoFocus
       />
+      <Form.Dropdown
+        id="target"
+        title="Target List"
+        value={selectedTarget}
+        onChange={setSelectedTarget}
+      >
+        {targets.map((target) => (
+          <Form.Dropdown.Item key={target.id} value={target.id} title={target.name} />
+        ))}
+      </Form.Dropdown>
     </Form>
   );
 }

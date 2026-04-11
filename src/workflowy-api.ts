@@ -3,6 +3,11 @@ export interface WorkflowyNode {
   name: string;
 }
 
+export interface WorkflowyTarget {
+  id: string;
+  name: string;
+}
+
 /**
  * Simple client for Workflowy's new official API
  */
@@ -22,6 +27,25 @@ export class WorkflowyClient {
       Authorization: `Bearer ${this.apiKey}`,
       "Content-Type": "application/json",
     };
+  }
+
+  /**
+   * List available targets from the Workflowy API
+   */
+  async listTargets(): Promise<WorkflowyTarget[]> {
+    const response = await fetch(`${this.baseUrl}/targets/`, {
+      headers: this.headers,
+    });
+
+    if (!response.ok) {
+      if (response.status === 401 || response.status === 403) {
+        throw new Error("Invalid Workflowy API Key. Please check your extension preferences.");
+      }
+      throw new Error(`Workflowy API returned ${response.status}: ${response.statusText}`);
+    }
+
+    const data = (await response.json()) as { targets: WorkflowyTarget[] };
+    return data.targets || [];
   }
 
   /**

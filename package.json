@@ -23,14 +23,6 @@
       "required": true
     },
     {
-      "name": "targetList",
-      "title": "Target List Name",
-      "description": "The exact name or pattern of the list to append entries to (e.g., 'Journal')",
-      "type": "textfield",
-      "required": true,
-      "default": "Journal"
-    },
-    {
       "name": "timestampFormat",
       "title": "Timestamp Format",
       "description": "Format for the prepended timestamp",
