@@ -12,6 +12,12 @@
       "title": "Log Journal Entry",
       "description": "Prepend the current time and send to Workflowy",
       "mode": "view"
+    },
+    {
+      "name": "add-todo",
+      "title": "Add To-Do",
+      "description": "Add a to-do item to Workflowy",
+      "mode": "view"
     }
   ],
   "preferences": [

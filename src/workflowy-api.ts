@@ -97,14 +97,21 @@ export class WorkflowyClient {
   /**
    * Creates a new child node
    */
-  async createNode(parentId: string, name: string): Promise<string> {
+  async createNode(
+    parentId: string,
+    name: string,
+    options: { note?: string; layoutMode?: string; position?: "top" | "bottom" } = {},
+  ): Promise<string> {
+    const { note, layoutMode, position = "bottom" } = options;
     const response = await fetch(`${this.baseUrl}/nodes/`, {
       method: "POST",
       headers: this.headers,
       body: JSON.stringify({
         parent_id: parentId,
-        name: name,
-        position: "bottom", // Typically journals append to the bottom
+        name,
+        position,
+        ...(note ? { note } : {}),
+        ...(layoutMode ? { layoutMode } : {}),
       }),
     });
 
