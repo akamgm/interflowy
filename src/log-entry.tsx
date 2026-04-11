@@ -8,6 +8,7 @@ import {
   openExtensionPreferences,
   Icon,
   closeMainWindow,
+  LocalStorage,
 } from "@raycast/api";
 import { useState, useEffect } from "react";
 import { WorkflowyClient, WorkflowyTarget } from "./workflowy-api";
@@ -34,10 +35,16 @@ export default function Command() {
       }
       try {
         const client = new WorkflowyClient(preferences.workflowyApiKey);
-        const fetchedTargets = await client.listTargets();
+        const [fetchedTargets, lastTarget] = await Promise.all([
+          client.listTargets(),
+          LocalStorage.getItem<string>("lastTarget"),
+        ]);
         setTargets(fetchedTargets);
         if (fetchedTargets.length > 0) {
-          setSelectedTarget(fetchedTargets[0].key);
+          const defaultKey = lastTarget && fetchedTargets.some((t) => t.key === lastTarget)
+            ? lastTarget
+            : fetchedTargets[0].key;
+          setSelectedTarget(defaultKey);
         }
       } catch (error) {
         await showToast({
@@ -103,6 +110,7 @@ export default function Command() {
       const itemName = `**${timeStr}** ${values.text}`;
 
       await client.createNode(values.target, itemName);
+      await LocalStorage.setItem("lastTarget", values.target);
 
       toast.style = Toast.Style.Success;
       toast.title = "Logged successfully";
