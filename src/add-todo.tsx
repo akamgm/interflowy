@@ -168,7 +168,7 @@ export default function Command() {
         onChange={setSelectedTarget}
       >
         {targets.map((target) => (
-          <Form.Dropdown.Item key={target.key} value={target.key} title={target.name ?? target.key} />
+          <Form.Dropdown.Item key={target.key} value={target.key} title={target.name ?? target.key} keywords={[target.key]} />
         ))}
       </Form.Dropdown>
     </Form>
