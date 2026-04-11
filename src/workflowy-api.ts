@@ -46,7 +46,9 @@ export class WorkflowyClient {
     }
 
     const data = (await response.json()) as { targets: WorkflowyTarget[] };
-    return (data.targets || []).filter((t) => t.name !== null);
+    return (data.targets || [])
+      .filter((t) => t.name !== null)
+      .map((t) => ({ ...t, name: t.name!.replace(/<[^>]*>/g, "").trim() || t.key }));
   }
 
   /**
