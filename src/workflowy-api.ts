@@ -4,8 +4,9 @@ export interface WorkflowyNode {
 }
 
 export interface WorkflowyTarget {
-  id: string;
-  name: string;
+  key: string;
+  type: "shortcut" | "system";
+  name: string | null;
 }
 
 /**
@@ -45,7 +46,7 @@ export class WorkflowyClient {
     }
 
     const data = (await response.json()) as { targets: WorkflowyTarget[] };
-    return data.targets || [];
+    return (data.targets || []).filter((t) => t.name !== null);
   }
 
   /**

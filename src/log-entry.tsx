@@ -37,7 +37,7 @@ export default function Command() {
         const fetchedTargets = await client.listTargets();
         setTargets(fetchedTargets);
         if (fetchedTargets.length > 0) {
-          setSelectedTarget(fetchedTargets[0].id);
+          setSelectedTarget(fetchedTargets[0].key);
         }
       } catch (error) {
         await showToast({
@@ -159,7 +159,7 @@ export default function Command() {
         onChange={setSelectedTarget}
       >
         {targets.map((target) => (
-          <Form.Dropdown.Item key={target.id} value={target.id} title={target.name} />
+          <Form.Dropdown.Item key={target.key} value={target.key} title={target.name ?? target.key} />
         ))}
       </Form.Dropdown>
     </Form>
