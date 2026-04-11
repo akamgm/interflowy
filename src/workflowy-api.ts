@@ -48,7 +48,11 @@ export class WorkflowyClient {
     const data = (await response.json()) as { targets: WorkflowyTarget[] };
     return (data.targets || [])
       .filter((t) => t.name !== null)
-      .map((t) => ({ ...t, name: t.name!.replace(/<[^>]*>/g, "").trim() || t.key }));
+      .map((t) => ({ ...t, name: t.name!.replace(/<[^>]*>/g, "").trim() || t.key }))
+      .sort((a, b) => {
+        if (a.type !== b.type) return a.type === "system" ? -1 : 1;
+        return a.name!.localeCompare(b.name!);
+      });
   }
 
   /**
