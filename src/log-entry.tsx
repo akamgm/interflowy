@@ -11,7 +11,7 @@ import {
   LocalStorage,
 } from "@raycast/api";
 import { useState, useEffect } from "react";
-import { WorkflowyClient, WorkflowyTarget } from "./workflowy-api";
+import { WorkflowyClient, WorkflowyTarget, targetLabel } from "./workflowy-api";
 
 interface Preferences {
   workflowyApiKey?: string;
@@ -179,7 +179,12 @@ export default function Command() {
           onChange={handleTargetChange}
         >
           {targets.map((target) => (
-            <Form.Dropdown.Item key={target.key} value={target.key} title={target.name ?? target.key} keywords={[target.key]} />
+            <Form.Dropdown.Item
+              key={target.key}
+              value={target.key}
+              title={targetLabel(target)}
+              keywords={target.parentName ? [target.key, target.parentName] : [target.key]}
+            />
           ))}
         </Form.Dropdown>
       ) : null}
