@@ -60,6 +60,14 @@ export default function Command() {
     fetchTargets();
   }, []);
 
+  function handleTargetChange(key: string) {
+    // Ignore selections for items that are not in the list (Raycast can emit
+    // a stale or empty value while the list is being replaced).
+    if (targets.some((t) => t.key === key)) {
+      setSelectedTarget(key);
+    }
+  }
+
   async function handleSubmit(values: { title: string; note: string; target: string }) {
     if (!values.title) {
       showToast({
@@ -161,16 +169,21 @@ export default function Command() {
         value={note}
         onChange={setNote}
       />
-      <Form.Dropdown
-        id="target"
-        title="Target List"
-        value={selectedTarget}
-        onChange={setSelectedTarget}
-      >
-        {targets.map((target) => (
-          <Form.Dropdown.Item key={target.key} value={target.key} title={target.name ?? target.key} keywords={[target.key]} />
-        ))}
-      </Form.Dropdown>
+      {/* Mount only once the items and the restored default are both ready:
+          a dropdown rendered with no items emits its own selection of the
+          first item, which would overwrite the last-used target. */}
+      {targets.length > 0 && selectedTarget ? (
+        <Form.Dropdown
+          id="target"
+          title="Target List"
+          value={selectedTarget}
+          onChange={handleTargetChange}
+        >
+          {targets.map((target) => (
+            <Form.Dropdown.Item key={target.key} value={target.key} title={target.name ?? target.key} keywords={[target.key]} />
+          ))}
+        </Form.Dropdown>
+      ) : null}
     </Form>
   );
 }
